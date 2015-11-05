@@ -344,8 +344,11 @@ class EntityManager
             return $rs;
         } catch (\Everyman\Neo4j\Exception $e) {
             $message = $e->getMessage();
-            preg_match('/\[message\] => (.*)/', $message, $parts);
-            throw new Exception('Query execution failed: ' . $parts[1], 0, $e, $query);
+            if (preg_match('/\[message\] => (.*)/', $message, $parts)) {
+                throw new Exception('Query execution failed: ' . $parts[1], 0, $e, $query);
+            } else {
+                throw new Exception('Query execution failed: ' . $message, 0, $e, $query);
+            }
         }
     }
 
